@@ -10,6 +10,7 @@ namespace MFRC522 {
     let PICC_READ = 0x30
     let PICC_ANTICOLL = 0x93
     let PCD_RESETPHASE = 0x0F
+    let selectPin = DigitalPin.P16
     let temp = 0
     let val = 0
     let uid: number[] = []
@@ -46,10 +47,10 @@ namespace MFRC522 {
     }
 
     function SPI_Write (adr: number, val: number) {
-        pins.digitalWritePin(DigitalPin.P16, 0)
+        pins.digitalWritePin(selectPin, 0)
         pins.spiWrite((adr << 1) & 0x7E)
         pins.spiWrite(val)
-        pins.digitalWritePin(DigitalPin.P16, 1)
+        pins.digitalWritePin(selectPin, 1)
     }
 
     function readFromCard ():string {
@@ -88,10 +89,10 @@ namespace MFRC522 {
     }
 
     function SPI_Read (adr: number) {
-        pins.digitalWritePin(DigitalPin.P16, 0)
+        pins.digitalWritePin(selectPin, 0)
         pins.spiWrite(((adr<<1)& 0x7E)|0x80)
         val = pins.spiWrite(0)
-        pins.digitalWritePin(DigitalPin.P16, 1)
+        pins.digitalWritePin(selectPin, 1)
         return val
     }
 
@@ -414,11 +415,14 @@ namespace MFRC522 {
      * Initial setup
      */
     //% block="Initialize MFRC522 Module"
+    //% selectPin.defl=DigitalPin.16
     //% weight=100
-   export function Init() {
+   export function Init(selectName: DigitalPin) {
+       selectPin = selectName
+
        pins.spiPins(DigitalPin.P15, DigitalPin.P14, DigitalPin.P13)
        pins.spiFormat(8, 0)
-       pins.digitalWritePin(DigitalPin.P16, 1)
+       pins.digitalWritePin(selectPin, 1)
 
        // reset module
        SPI_Write(CommandReg, PCD_RESETPHASE)
