@@ -10,6 +10,7 @@ namespace MFRC522 {
     let PICC_READ = 0x30
     let PICC_ANTICOLL = 0x93
     let PCD_RESETPHASE = 0x0F
+    let sdaPin = DigitalPin.P16
     let temp = 0
     let val = 0
     let uid: number[] = []
@@ -46,10 +47,10 @@ namespace MFRC522 {
     }
 
     function SPI_Write (adr: number, val: number) {
-        pins.digitalWritePin(DigitalPin.P16, 0)
+        pins.digitalWritePin(sdaPin, 0)
         pins.spiWrite((adr << 1) & 0x7E)
         pins.spiWrite(val)
-        pins.digitalWritePin(DigitalPin.P16, 1)
+        pins.digitalWritePin(sdaPin, 1)
     }
 
     function readFromCard ():string {
@@ -88,10 +89,10 @@ namespace MFRC522 {
     }
 
     function SPI_Read (adr: number) {
-        pins.digitalWritePin(DigitalPin.P16, 0)
+        pins.digitalWritePin(sdaPin, 0)
         pins.spiWrite(((adr<<1)& 0x7E)|0x80)
         val = pins.spiWrite(0)
-        pins.digitalWritePin(DigitalPin.P16, 1)
+        pins.digitalWritePin(sdaPin, 1)
         return val
     }
 
@@ -413,12 +414,28 @@ namespace MFRC522 {
     /*
      * Initial setup
      */
-    //% block="Initialize MFRC522 Module"
+    //% block="Initialize MFRC522 Module||SDA $sda SCK $sck MOSI $mosi MISO $miso"
+    //% sda.defl=DigitalPin.P16 mosi.defl=DigitalPin.P15 miso.defl=DigitalPin.P14 sck.defl=DigitalPin.P13
     //% weight=100
-   export function Init() {
-       pins.spiPins(DigitalPin.P15, DigitalPin.P14, DigitalPin.P13)
+   export function Init(sda?: DigitalPin, sck?: DigitalPin, mosi?: DigitalPin, miso?: DigitalPin) {
+       if (typeof sda == "undefined") {
+           sda = DigitalPin.P16
+       }
+       if (typeof mosi == "undefined") {
+           mosi = DigitalPin.P15
+       }
+       if (typeof miso == "undefined") {
+           miso = DigitalPin.P14
+       }
+       if (typeof sck == "undefined") {
+           sck = DigitalPin.P13
+       }
+
+       sdaPin = sda
+
+       pins.spiPins(mosi, miso, sck)
        pins.spiFormat(8, 0)
-       pins.digitalWritePin(DigitalPin.P16, 1)
+       pins.digitalWritePin(sdaPin, 1)
 
        // reset module
        SPI_Write(CommandReg, PCD_RESETPHASE)
