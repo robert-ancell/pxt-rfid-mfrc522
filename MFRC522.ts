@@ -417,20 +417,7 @@ namespace MFRC522 {
     //% block="Initialize MFRC522 Module||SDA $sda SCK $sck MOSI $mosi MISO $miso"
     //% sda.defl=DigitalPin.P16 mosi.defl=DigitalPin.P15 miso.defl=DigitalPin.P14 sck.defl=DigitalPin.P13
     //% weight=100
-   export function Init(sda?: DigitalPin, sck?: DigitalPin, mosi?: DigitalPin, miso?: DigitalPin) {
-       if (typeof sda == "undefined") {
-           sda = DigitalPin.P16
-       }
-       if (typeof mosi == "undefined") {
-           mosi = DigitalPin.P15
-       }
-       if (typeof miso == "undefined") {
-           miso = DigitalPin.P14
-       }
-       if (typeof sck == "undefined") {
-           sck = DigitalPin.P13
-       }
-
+   export function Init(sda: DigitalPin = DigitalPin.P16, sck: DigitalPin = DigitalPin.P15, mosi: DigitalPin = DigitalPin.P14, miso: DigitalPin = DigitalPin.P13) {
        sdaPin = sda
 
        pins.spiPins(mosi, miso, sck)
