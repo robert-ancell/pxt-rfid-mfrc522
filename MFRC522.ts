@@ -412,12 +412,22 @@ namespace MFRC522 {
     }
 
     /*
+     * Initial setup using default pins
+     */
+    //% block="Initialize MFRC522 Module"
+    //% weight=100
+   export function Init() {
+       InitWithPins(DigitalPin.P16, DigitalPin.P15, DigitalPin.P14, DigitalPin.P13)
+   }
+
+    /*
      * Initial setup
      */
-    //% block="Initialize MFRC522 Module||SDA $sda SCK $sck MOSI $mosi MISO $miso"
+    //% block="Initialize MFRC522 Module with pins SDA $sda SCK $sck MOSI $mosi MISO $miso"
     //% sda.defl=DigitalPin.P16 mosi.defl=DigitalPin.P15 miso.defl=DigitalPin.P14 sck.defl=DigitalPin.P13
+    //% advanced=true
     //% weight=100
-   export function Init(sda: DigitalPin = DigitalPin.P16, sck: DigitalPin = DigitalPin.P15, mosi: DigitalPin = DigitalPin.P14, miso: DigitalPin = DigitalPin.P13) {
+   export function InitWithPins(sda: DigitalPin, sck: DigitalPin, mosi: DigitalPin, miso: DigitalPin) {
        sdaPin = sda
 
        pins.spiPins(mosi, miso, sck)
